@@ -89,6 +89,7 @@ public class Main {
                             break;
                         case 1:
                             System.out.println("Adicionar aluguer");
+                            GestorDeFicheiros.adicionarAluguer(sc);
                             break;
                         case 2:
                             System.out.println("Remover aluguer");
