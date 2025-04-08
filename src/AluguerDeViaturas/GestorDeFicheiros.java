@@ -219,7 +219,7 @@ public class GestorDeFicheiros {
                 Integer newTelefone = InputValidation.validateOptionalNineDigitInteger(sc, "Novo telefone (9 dígitos) (ENTER para manter): ");
                 if (newTelefone != null) c.setTelefone(newTelefone);
 
-                // E-mail com verificação básica
+                // email com verificação básica
                 while (true) {
                     String newEmail = InputValidation.validateOptionalString(sc, "Novo email (ENTER para manter): ");
                     if (newEmail == null) break;
@@ -278,6 +278,7 @@ public class GestorDeFicheiros {
         }
     }
 
+
     // === ALUGUERES ===
 
     public static boolean loadAlugueresFile() {
@@ -286,7 +287,9 @@ public class GestorDeFicheiros {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] a = line.split(";");
-                Aluguer al = new Aluguer(Integer.parseInt(a[0]), a[1], a[2], a[3]);
+                LocalDate dataInicio = LocalDate.parse(a[2], formatter);
+                LocalDate dataFim = LocalDate.parse(a[3], formatter);
+                Aluguer al = new Aluguer(Integer.parseInt(a[0]), a[1], dataInicio, dataFim);
                 alugueres.add(al);
             }
         } catch (Exception e) {
@@ -296,17 +299,192 @@ public class GestorDeFicheiros {
         return true;
     }
 
-    public static void listarAlugueres() {
+    public static void adicionarAluguer(Scanner sc) {
+        // Solicitar o NIF do cliente
+        int nif = InputValidation.validateIntGT0(sc, "Digite o NIF do cliente: ");
+        boolean clienteExiste = false;
+
+        for (Cliente c : clientes) {
+            if (c.getNIF() == nif) {
+                clienteExiste = true;
+                break;
+            }
+        }
+        if (!clienteExiste) {
+            System.out.println("Erro: Cliente não encontrado.");
+            return;
+        }
+
+        // Solicitar a matrícula da viatura
+        System.out.print("Digite a matrícula da viatura: ");
+        String matricula = sc.nextLine().trim();
+        boolean viaturaExiste = false;
+        for (Viatura v : viaturas) {
+            if (v.getMatricula().equalsIgnoreCase(matricula)) {
+                viaturaExiste = true;
+                break;
+            }
+        }
+        if (!viaturaExiste) {
+            System.out.println("Erro: Viatura não encontrada.");
+            return;
+        }
+
+        // Solicitar as datas de início e fim
+        LocalDate dataInicio, dataFim;
+        while (true) {
+            try {
+                System.out.print("Digite a data de início do aluguer (dd/MM/yyyy): ");
+                String entradaInicio = sc.nextLine();
+                dataInicio = LocalDate.parse(entradaInicio, formatter);
+
+                System.out.print("Digite a data de fim do aluguer (dd/MM/yyyy): ");
+                String entradaFim = sc.nextLine();
+                dataFim = LocalDate.parse(entradaFim, formatter);
+
+                if (!dataFim.isAfter(dataInicio)) {
+                    System.out.println("A data de fim deve ser posterior à data de início.");
+                    continue;
+                }
+                break;
+            } catch (Exception e) {
+                System.out.println("Erro: As datas inseridas são inválidas. Tente novamente.");
+            }
+        }
+
+        // Verificar se a viatura já está alugada neste período
         for (Aluguer a : alugueres) {
-            System.out.println(a);
+            if (a.getMatriculaViatura().equalsIgnoreCase(matricula)) {
+                if ((dataInicio.isBefore(a.getDataFim()) && dataInicio.isAfter(a.getDataInicio())) ||
+                        (dataFim.isBefore(a.getDataFim()) && dataFim.isAfter(a.getDataInicio()))) {
+                    System.out.println("Erro: Já existe um aluguer para esta viatura neste período.");
+                    return;
+                }
+            }
+        }
+
+        // Adicionar o novo aluguer
+        Aluguer novoAluguer = new Aluguer(nif, matricula, dataInicio, dataFim);
+        alugueres.add(novoAluguer);
+        updateAlugueresFile();
+
+        System.out.println("Novo aluguer adicionado com sucesso!");
+    }
+
+    private static void updateAlugueresFile() {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(alugueresFilePath, StandardCharsets.ISO_8859_1))) {
+            for (Aluguer a : alugueres) {
+                bw.write(a.getNifCliente() + ";" +
+                        a.getMatriculaViatura() + ";" +
+                        a.getDataInicio().format(formatter) + ";" +
+                        a.getDataFim().format(formatter) + "\n");
+            }
+        } catch (Exception e) {
+            System.out.println("Erro ao atualizar o ficheiro de alugueres.");
         }
     }
 
+
     public static void editarAluguer(Scanner sc) {
-        System.out.println("Ainda não implementado.");
+        int nif = InputValidation.validateIntGT0(sc, "Digite o NIF do cliente: ");
+        System.out.print("Digite a matrícula da viatura: ");
+        String matricula = sc.nextLine().trim();
+
+        // Encontrar o aluguer correspondente
+        for (Aluguer a : alugueres) {
+            if (a.getNifCliente() == nif && a.getMatriculaViatura().equalsIgnoreCase(matricula)) {
+
+                // Editar a data de início
+                LocalDate novaDataInicio, novaDataFim;
+
+                // Nova data de início
+                while (true) {
+                    try {
+                        System.out.print("Nova data de início (dd/MM/yyyy) (ENTER para manter): ");
+                        String entradaInicio = sc.nextLine();
+                        if (!entradaInicio.isEmpty()) {
+                            novaDataInicio = LocalDate.parse(entradaInicio, formatter);
+                        } else {
+                            novaDataInicio = a.getDataInicio(); // Manter a data antiga
+                        }
+
+                        // Nova data de fim
+                        System.out.print("Nova data de fim (dd/MM/yyyy) (ENTER para manter): ");
+                        String entradaFim = sc.nextLine();
+                        if (!entradaFim.isEmpty()) {
+                            novaDataFim = LocalDate.parse(entradaFim, formatter);
+                        } else {
+                            novaDataFim = a.getDataFim(); // Manter a data antiga
+                        }
+
+                        if (!novaDataFim.isAfter(novaDataInicio)) {
+                            System.out.println("A data de fim deve ser posterior à data de início.");
+                            continue;
+                        }
+
+                        // Atualizar as datas
+                        a.setDataInicio(novaDataInicio);
+                        a.setDataFim(novaDataFim);
+                        System.out.println("Aluguer atualizado com sucesso.");
+                        updateAlugueresFile();
+                        return;
+                    } catch (Exception e) {
+                        System.out.println("Erro: As datas inseridas são inválidas. Tente novamente.");
+                    }
+                }
+            }
+        }
+        System.out.println("Aluguer não encontrado.");
     }
 
     public static void removerAluguer(Scanner sc) {
-        System.out.println("Ainda não implementado.");
+        int nif = InputValidation.validateInt(sc, "Digite o NIF do cliente: ");
+        System.out.print("Digite a matrícula da viatura: ");
+        String matricula = sc.nextLine().trim();
+
+        LocalDate dataInicio;
+        while (true) {
+            System.out.print("Digite a data de início do aluguer (dd/MM/yyyy): ");
+            String entrada = sc.nextLine().trim();
+            try {
+                dataInicio = LocalDate.parse(entrada, formatter);
+                break;
+            } catch (Exception e) {
+                System.out.println("Data inválida. Tente novamente no formato dd/MM/yyyy.");
+            }
+        }
+
+        for (int i = 0; i < alugueres.size(); i++) {
+            Aluguer a = alugueres.get(i);
+            if (a.getNifCliente() == nif &&
+                    a.getMatriculaViatura().equalsIgnoreCase(matricula) &&
+                    a.getDataInicio().equals(dataInicio)) {
+
+                alugueres.remove(i);
+                System.out.println("Aluguer removido com sucesso.");
+                updateAlugueresFile();
+                return;
+            }
+        }
+
+        System.out.println("Aluguer não encontrado.");
     }
+
+
+    public static void listarAlugueres() {
+        if (alugueres.isEmpty()) {
+            System.out.println("Não há alugueres registados.");
+            return;
+        }
+
+        System.out.println("Lista de Alugueres:");
+        for (Aluguer a : alugueres) {
+            System.out.println("NIF Cliente: " + a.getNifCliente() +
+                    ", Matrícula: " + a.getMatriculaViatura() +
+                    ", Data Início: " + a.getDataInicio().format(formatter) +
+                    ", Data Fim: " + a.getDataFim().format(formatter));
+        }
+    }
+
+
 }
