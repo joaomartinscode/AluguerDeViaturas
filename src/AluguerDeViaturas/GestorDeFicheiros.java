@@ -26,9 +26,9 @@ public class GestorDeFicheiros {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     // Listas que guardam os objetos de viaturas, clientes e alugueres
-    private static ArrayList<Viatura> viaturas = new ArrayList<>();
-    private static ArrayList<Cliente> clientes = new ArrayList<>();
-    private static ArrayList<Aluguer> alugueres = new ArrayList<>();
+    private final static ArrayList<Viatura> viaturas = new ArrayList<>();
+    private final static ArrayList<Cliente> clientes = new ArrayList<>();
+    private final static ArrayList<Aluguer> alugueres = new ArrayList<>();
 
     // === VIATURAS ===
 
@@ -98,22 +98,21 @@ public class GestorDeFicheiros {
 
         for (Viatura v : viaturas) {
             if (v.getMatricula().equalsIgnoreCase(matricula)) {
-                System.out.print("Nova marca (deixe vazio para manter a atual): ");
-                String newMarca = sc.nextLine();
-                if (!newMarca.isEmpty()) v.setMarca(newMarca);
 
-                System.out.print("Novo modelo (deixe vazio para manter o atual): ");
-                String newModelo = sc.nextLine();
-                if (!newModelo.isEmpty()) v.setModelo(newModelo);
+                String newMarca = InputValidation.validateOptionalString(sc, "Nova marca (ENTER para manter): ");
+                if (newMarca != null) v.setMarca(newMarca);
 
-                int newAno = InputValidation.validateInt(sc, "Novo ano (-1 para manter o atual): ");
-                if (newAno >= 0) v.setAno(newAno);
+                String newModelo = InputValidation.validateOptionalString(sc, "Novo modelo (ENTER para manter): ");
+                if (newModelo != null) v.setModelo(newModelo);
 
-                double newKm = InputValidation.validateDouble(sc, "Nova quilometragem (-1 para manter a atual): ");
-                if (newKm >= 0) v.setKm(newKm);
+                Integer novoAno = InputValidation.validateOptionalInt(sc, "Novo ano (ENTER para manter): ");
+                if (novoAno != null) v.setAno(novoAno);
 
-                int newLugares = InputValidation.validateInt(sc, "Novo número de lugares (-1 para manter o atual): ");
-                if (newLugares >= 0) v.setnLugares(newLugares);
+                Double novaKm = InputValidation.validateOptionalDouble(sc, "Nova quilometragem (ENTER para manter): ");
+                if (novaKm != null) v.setKm(novaKm);
+
+                Integer novoNLugares = InputValidation.validateOptionalInt(sc, "Novo número de lugares (ENTER para manter): ");
+                if (novoNLugares != null) v.setnLugares(novoNLugares);
 
                 System.out.println("Viatura atualizada com sucesso!");
                 updateViaturaToFile();
@@ -211,44 +210,44 @@ public class GestorDeFicheiros {
         int NIF = InputValidation.validateIntGT0(sc, "Digite o NIF do cliente que deseja editar: ");
         for (Cliente c : clientes) {
             if (c.getNIF() == NIF) {
-                System.out.print("Novo nome (deixe vazio para manter): ");
-                String newNome = sc.nextLine();
-                if (!newNome.isEmpty()) c.setNome(newNome);
+                String newNome = InputValidation.validateOptionalString(sc, "Novo nome (ENTER para manter): ");
+                if (newNome != null) c.setNome(newNome);
 
-                System.out.print("Nova morada (deixe vazio para manter): ");
-                String newMorada = sc.nextLine();
-                if (!newMorada.isEmpty()) c.setMorada(newMorada);
+                String newMorada = InputValidation.validateOptionalString(sc, "Nova morada (ENTER para manter): ");
+                if (newMorada != null) c.setMorada(newMorada);
 
-                int newTelefone = InputValidation.validateNineDigitIntegerOrEnter(sc, "Novo telefone (9 dígitos) (-1 para manter): ");
-                if (newTelefone >= 900000000 && newTelefone <= 999999999) c.setTelefone(newTelefone);
+                Integer newTelefone = InputValidation.validateOptionalNineDigitInteger(sc, "Novo telefone (9 dígitos) (ENTER para manter): ");
+                if (newTelefone != null) c.setTelefone(newTelefone);
 
+                // E-mail com verificação básica
                 while (true) {
-                    System.out.print("Novo email (deixe vazio para manter): ");
-                    String newEmail = sc.nextLine();
-                    if (newEmail.isEmpty()) break;
+                    String newEmail = InputValidation.validateOptionalString(sc, "Novo email (ENTER para manter): ");
+                    if (newEmail == null) break;
+
                     if (newEmail.contains("@") && newEmail.contains(".") && newEmail.indexOf("@") < newEmail.lastIndexOf(".")) {
                         c.setEmail(newEmail);
                         break;
                     } else {
-                        System.out.println("Email inválido. Por favor, insira um email com '@' e domínio (ex: exemplo@dominio.com).");
+                        System.out.println("Email inválido. Ex: exemplo@dominio.com");
                     }
                 }
 
+                // Data de nascimento
                 while (true) {
-                    System.out.print("Nova data de nascimento (deixe vazio para manter): ");
-                    String newData = sc.nextLine();
-                    if (newData.isEmpty()) break;
+                    String newData = InputValidation.validateOptionalString(sc, "Nova data de nascimento (dd/MM/yyyy) (ENTER para manter): ");
+                    if (newData == null) break;
+
                     try {
-                        LocalDate newDataNascimento = LocalDate.parse(newData, formatter);
-                        c.setDataNascimento(newDataNascimento);
+                        LocalDate dataNascimento = LocalDate.parse(newData, formatter);
+                        c.setDataNascimento(dataNascimento);
                         break;
                     } catch (Exception e) {
-                        System.out.println("Data inválida. Por favor, use o formato dd/MM/yyyy.");
+                        System.out.println("Data inválida. Use o formato dd/MM/yyyy.");
                     }
                 }
 
-                int newNCarta = InputValidation.validateInt(sc, "Novo nº carta condução (-1 para manter): ");
-                if (newNCarta >= 0) c.setnCartaConducao(newNCarta);
+                Integer novaCarta = InputValidation.validateOptionalInt(sc, "Novo nº carta condução (ENTER para manter): ");
+                if (novaCarta != null) c.setnCartaConducao(novaCarta);
 
                 System.out.println("Cliente atualizado com sucesso!");
                 updateClienteToFile();
