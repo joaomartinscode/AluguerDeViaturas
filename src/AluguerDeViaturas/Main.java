@@ -9,11 +9,6 @@ Programação Orientada a Objetos
 Projeto 1 - Aluguer de viaturas
 Engenharia Informática - 1.º Ano
 
-Alunos:
-	Joao Martins	no. 25856
-	Paulo Campos	no. 25721
-
-Data de Realização: __/__/2025
 */
 
 public class Main {
