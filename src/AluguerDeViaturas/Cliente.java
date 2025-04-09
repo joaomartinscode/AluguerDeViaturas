@@ -21,10 +21,6 @@ public class Cliente {
         return NIF;
     }
 
-    public void setNIF(int NIF) {
-        this.NIF = NIF;
-    }
-
     public String getNome() {
         return nome;
     }
@@ -65,11 +61,11 @@ public class Cliente {
         this.dataNascimento = dataNascimento;
     }
 
-    public int getnCartaConducao() {
+    public int getNCartaConducao() {
         return nCartaConducao;
     }
 
-    public void setnCartaConducao(int nCartaConducao) {
+    public void setNCartaConducao(int nCartaConducao) {
         this.nCartaConducao = nCartaConducao;
     }
 

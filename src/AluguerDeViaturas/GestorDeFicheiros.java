@@ -72,7 +72,7 @@ public class GestorDeFicheiros {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(viaturasFilePath, StandardCharsets.ISO_8859_1, true))) {
             bw.write(novaViatura.getMarca() + ";" + novaViatura.getModelo() + ";" +
                     novaViatura.getMatricula() + ";" + novaViatura.getKm() + ";" +
-                    novaViatura.getAno() + ";" + novaViatura.getnLugares() + "\n");
+                    novaViatura.getAno() + ";" + novaViatura.getNLugares() + "\n");
             System.out.println("Viatura adicionada com sucesso.");
         } catch (Exception e) {
             System.out.println("Erro ao atualizar o ficheiro de viaturas.");
@@ -84,7 +84,7 @@ public class GestorDeFicheiros {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(viaturasFilePath, StandardCharsets.ISO_8859_1))) {
             for (Viatura v : viaturas) {
                 bw.write(v.getMarca() + ";" + v.getModelo() + ";" + v.getMatricula() + ";" +
-                        v.getKm() + ";" + v.getAno() + ";" + v.getnLugares() + "\n");
+                        v.getKm() + ";" + v.getAno() + ";" + v.getNLugares() + "\n");
             }
         } catch (Exception e) {
             System.out.println("Erro ao atualizar o ficheiro de viaturas.");
@@ -112,7 +112,7 @@ public class GestorDeFicheiros {
                 if (novaKm != null) v.setKm(novaKm);
 
                 Integer novoNLugares = InputValidation.validateOptionalInt(sc, "Novo número de lugares (ENTER para manter): ");
-                if (novoNLugares != null) v.setnLugares(novoNLugares);
+                if (novoNLugares != null) v.setNLugares(novoNLugares);
 
                 System.out.println("Viatura atualizada com sucesso!");
                 updateViaturaToFile();
@@ -186,7 +186,7 @@ public class GestorDeFicheiros {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(clientesFilePath, StandardCharsets.ISO_8859_1, true))) {
             bw.write(novoCliente.getNIF() + ";" + novoCliente.getNome() + ";" + novoCliente.getMorada() + ";" +
                     novoCliente.getTelefone() + ";" + novoCliente.getEmail() + ";" +
-                    novoCliente.getDataNascimento().format(formatter) + ";" + novoCliente.getnCartaConducao() + "\n");
+                    novoCliente.getDataNascimento().format(formatter) + ";" + novoCliente.getNCartaConducao() + "\n");
         } catch (Exception e) {
             System.out.println("Erro ao atualizar o ficheiro de clientes.");
         }
@@ -198,7 +198,7 @@ public class GestorDeFicheiros {
             for (Cliente c : clientes) {
                 bw.write(c.getNIF() + ";" + c.getNome() + ";" + c.getMorada() + ";" +
                         c.getTelefone() + ";" + c.getEmail() + ";" +
-                        c.getDataNascimento().format(formatter) + ";" + c.getnCartaConducao() + "\n");
+                        c.getDataNascimento().format(formatter) + ";" + c.getNCartaConducao() + "\n");
             }
         } catch (Exception e) {
             System.out.println("Erro ao atualizar o ficheiro de clientes.");
@@ -247,7 +247,7 @@ public class GestorDeFicheiros {
                 }
 
                 Integer novaCarta = InputValidation.validateOptionalInt(sc, "Novo nº carta condução (ENTER para manter): ");
-                if (novaCarta != null) c.setnCartaConducao(novaCarta);
+                if (novaCarta != null) c.setNCartaConducao(novaCarta);
 
                 System.out.println("Cliente atualizado com sucesso!");
                 updateClienteToFile();

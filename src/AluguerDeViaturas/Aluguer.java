@@ -4,8 +4,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class Aluguer {
-    private int nifCliente;
-    private String matriculaViatura;
+    private final int nifCliente;
+    private final String matriculaViatura;
     private LocalDate dataInicio;
     private LocalDate dataFim;
 

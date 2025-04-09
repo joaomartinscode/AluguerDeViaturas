@@ -34,10 +34,6 @@ public class Viatura {
         return matricula;
     }
 
-    public void setMatricula(String matricula) {
-        this.matricula = matricula;
-    }
-
     public int getAno() {
         return ano;
     }
@@ -54,11 +50,11 @@ public class Viatura {
         this.km = km;
     }
 
-    public int getnLugares() {
+    public int getNLugares() {
         return nLugares;
     }
 
-    public void setnLugares(int nLugares) {
+    public void setNLugares(int nLugares) {
         this.nLugares = nLugares;
     }
 

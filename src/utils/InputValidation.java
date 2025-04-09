@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 public class InputValidation {
     public static int validateIntBetween(Scanner sc, String message, int min, int max) {
-        int value = 0;
+        int value;
 
         while (true) {
             System.out.print(message);
@@ -21,23 +21,6 @@ public class InputValidation {
 
             }catch (InputMismatchException e){
                 System.out.println("Introduza um número inteiro entre " + min + " e " + max);
-                sc.nextLine();
-            }
-        }
-    }
-
-    public static double validateDouble(Scanner sc, String message) {
-        double value;
-
-        while (true) {
-            System.out.print(message);
-            try{
-                value = sc.nextDouble();
-                sc.nextLine();
-                return value;
-
-            }catch (InputMismatchException e){
-                System.out.println("Introduza um número válido. ");
                 sc.nextLine();
             }
         }
