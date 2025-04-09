@@ -23,8 +23,8 @@ public class Main {
         }
 
         Scanner sc = new Scanner(System.in);
-        int option = -1;
-        int subOption = -1;
+        int option;
+        int subOption;
 
         do{
             menu(0);
