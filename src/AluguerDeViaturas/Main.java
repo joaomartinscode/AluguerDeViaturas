@@ -9,19 +9,6 @@ Instituto Politécnico de Portalegre
 Programação Orientada a Objetos
 Projeto 1 - Aluguer de viaturas
 Engenharia Informática - 1.º Ano
-
-Alunos:
-	Joao Martins	no. 25856
-	Paulo Campos	no. 25721
-
-Data de Realização: 12/04/2025
-
-Estrutura do Programa:
-
-Main - Responsável por toda a interação com o utilizador.
-GestorDeDados - Contém toda a lógica de gestão dos dados e exceções.
-InputValidation - Contém métodos auxiliares para validação dos dados inseridos pelo utilizador
-Classes: Viatura, Cliente, Aluguer - Representam os dados principais utilizados no sistema.
 */
 
 public class Main {
